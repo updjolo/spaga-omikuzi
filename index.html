@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SUPER☆GiRLS 今日のラッキーメンバー</title>
+  
+  <!-- OGP（SNSプレビュー）設定 -->
+  <meta property="og:title" content="SUPER☆GiRLS 今日のラッキーメンバー">
+  <meta property="og:description" content="今日のあなたのラッキーメンバーとラッキーソングを占おう！">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://updjolo.github.io/spaga-omikuzi/">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #ff6b9d;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --text: #4a3e43;
+      --member-color: #ff6b9d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      background: linear-gradient(135deg, #fff0f5 0%, #ffe4e1 50%, #f0fff0 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      transition: background 1s ease; /* 背景色変化をスムーズにする設定 */
+    }
+
+    .container {
+      width: 100%;
+      max-width: 440px;
+      background: var(--card-bg);
+      border-radius: 28px;
+      padding: 32px 24px;
+      box-shadow: 0 20px 40px rgba(255, 107, 157, 0.15), 0 2px 10px rgba(0, 0, 0, 0.03);
+      text-align: center;
+      border: 3px solid #ffffff;
+      position: relative;
+    }
+
+    .header-tag {
+      display: inline-block;
+      background: linear-gradient(90deg, #ff6b9d, #ff8da1);
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 10px rgba(255, 107, 157, 0.2);
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #ff3377;
+      margin-bottom: 6px;
+    }
+
+    .date-display {
+      font-size: 0.9rem;
+      color: #88787e;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    /* 誕生日バナー */
+    .birthday-banner {
+      display: none;
+      color: #ffffff;
+      font-weight: 900;
+      padding: 12px 14px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+      animation: pulse 1.5s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.98); }
+      100% { transform: scale(1.02); }
+    }
+
+    .card-slot {
+      background: #ffffff;
+      border: 3px dashed #ffb6c1;
+      border-radius: 20px;
+      padding: 24px 20px;
+      min-height: 250px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: inherit;
+      pointer-events: none;
+    }
+
+    .card-slot.revealed {
+      border-style: solid;
+      border-color: var(--member-color);
+      background: linear-gradient(180deg, #ffffff 0%, #fff5f8 100%);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
+    .card-slot.revealed:hover {
+      transform: translateY(-3px);
+    }
+
+    .member-icon {
+      font-size: 3.2rem;
+      margin-bottom: 8px;
+    }
+
+    .member-name {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--member-color);
+      margin-bottom: 2px;
+      transition: color 0.3s ease;
+    }
+
+    .member-handle {
+      font-size: 0.85rem;
+      color: #88787e;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    /* ラッキー曲＆アイテム表示エリア */
+    .lucky-details {
+      display: none;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid #ffe4e1;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-size: 0.82rem;
+      text-align: left;
+      color: #5a4b50;
+      line-height: 1.6;
+    }
+
+    .lucky-details span {
+      font-weight: 900;
+      color: var(--member-color);
+    }
+
+    .fortune-msg {
+      font-size: 0.95rem;
+      color: #5a4b50;
+      line-height: 1.5;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 50px;
+      font-family: inherit;
+      font-size: 1.05rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn-draw {
+      background: linear-gradient(90deg, #ff6b9d, #ff4785);
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(255, 107, 157, 0.35);
+      margin-bottom: 12px;
+    }
+
+    .btn-draw:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(255, 107, 157, 0.45);
+    }
+
+    .btn-draw:disabled {
+      background: #cccccc;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .btn-profile {
+      display: none;
+      background: var(--member-color);
+      color: #ffffff;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      transition: background 0.3s ease;
+    }
+
+    .btn-profile:hover {
+      filter: brightness(0.95);
+    }
+
+    .btn-share {
+      display: none;
+      background: #000000;
+      color: #ffffff;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-share:hover {
+      background: #222222;
+    }
+
+    .footer {
+      margin-top: 24px;
+      font-size: 0.75rem;
+      color: #b0a0a5;
+    }
+
+    .sparkle {
+      display: inline-block;
+      animation: spin 3s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <span class="header-tag">SUPER☆GiRLS</span>
+    <h1>TODAY'S LUCKY MEMBER</h1>
+    <div class="date-display" id="dateDisplay">----.--.--</div>
+
+    <!-- 誕生日限定バナー -->
+    <div class="birthday-banner" id="birthdayBanner"></div>
+
+    <a id="cardSlot" class="card-slot" target="_blank" rel="noopener noreferrer">
+      <div class="member-icon" id="cardIcon">🎀</div>
+      <div class="member-name" id="cardTitle">今日のおみくじ</div>
+      <div class="member-handle" id="cardHandle">ボタンを押して運勢を占おう！</div>
+      
+      <!-- ラッキー曲＆アイテム -->
+      <div class="lucky-details" id="luckyDetails">
+        <div>🎵 <span>ラッキー曲:</span> <span id="luckySong"></span></div>
+        <div>🍀 <span>ラッキーアイテム:</span> <span id="luckyItem"></span></div>
+      </div>
+
+      <div class="fortune-msg" id="cardMsg">1日1回だけチャレンジできます ✨</div>
+    </a>
+
+    <button class="btn btn-draw" id="drawBtn" onclick="drawFortune()">
+      <span class="sparkle">✨</span> <span id="drawBtnText">運勢を占う！</span>
+    </button>
+
+    <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-profile" id="profileBtn">
+      🚀 公式Xプロフィールを開く
+    </a>
+
+    <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-share" id="shareBtn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+      </svg>
+      結果をXにポストする
+    </a>
+
+    <div class="footer">Created by レッセフェール<br>v1.0</div>
+  </div>
+
+  <script>
+    const MEMBERS = [
+      { id: 0, name: "門林 有羽", url: "https://x.com/SG4_YUU", handle: "@SG4_YUU", color: "#38bdf8", birthday: "10-28", song: "MAX！乙女心", item: "水色のペンライト", msg: "笑顔いっぱいの素敵な出来事がありそう！ハッピーに過ごそう♪" },
+      { id: 1, name: "竹内 ななみ", url: "https://x.com/SG5_nanami", handle: "@SG5_nanami", color: "#ef4444", birthday: "10-02", song: "女子力←パラダイス", item: "赤色のTシャツ", msg: "あなたのリーダーシップが光る一日！思い切って行動しよう！" },
+      { id: 2, name: "鎌田 彩樺", url: "https://x.com/SG6_AYAKA_avex", handle: "@SG6_AYAKA_avex", color: "#5c6bc0", birthday: "04-29", song: "ラブサマ!!!", item: "青紫色のキーホルダー", msg: "センス抜群の一日！クリエイティブなことに挑戦してみて！" },
+      { id: 3, name: "柏 綾菜", url: "https://x.com/SG6_AYANA_avex", handle: "@SG6_AYANA_avex", color: "#c084fc", birthday: "07-20", song: "プリプリ♥SUMMERキッス", item: "紫色のスニーカー", msg: "元気いっぱいに過ごせそう！エネルギー全開でいこう！" },
+      { id: 4, name: "河村 果歩", url: "https://x.com/SG6_KAHO_avex", handle: "@SG6_KAHO_avex", color: "#64748b", birthday: "06-17", song: "ギラギラRevolution", item: "白いキャップ", msg: "ハッピーなサプライズがあるかも！周りを明るく照らそう！" },
+      { id: 5, name: "櫻井 穂夏", url: "https://x.com/SG6_HONOKA_avex", handle: "@SG6_HONOKA_avex", color: "#22c55e", birthday: "07-06", song: "花道!!ア～ンビシャス", item: "緑色のタオル", msg: "自然体でいくのが吉！心穏やかに素晴らしい一日を！" },
+      { id: 6, name: "浜田 萌帆", url: "https://x.com/SG7_MOYUHO", handle: "@SG7_MOYUHO", color: "#ff69b4", birthday: "10-29", song: "スイート☆スマイル", item: "ピンクのポーチ", msg: "トキメキが溢れる一日！可愛いものを身につけて運気UP！" },
+      { id: 7, name: "二宮 伶寧", url: "https://x.com/SG7_RUNE", handle: "@SG7_RUNE", color: "#a3e635", birthday: "09-16", song: "Catch The Dream", item: "イチゴのスイーツ🍓", msg: "最高にツイてる一日！甘いものを食べるとさらに運気UP！" },
+      { id: 8, name: "新森 二愛", url: "https://x.com/SG7_NEAR", handle: "@SG7_NEAR", color: "#ffd900", birthday: "11-30", song: "可愛いだけじゃいられない", item: "たこやき", msg: "可愛いだけじゃないあなたの魅力が炸裂！自信を持って突き進もう！" }
+    ];
+
+    function getTodayInfo() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return {
+        display: `${y}年${now.getMonth() + 1}月${now.getDate()}日`,
+        mmdd: `${m}-${d}`,
+        ymd: `${y}-${m}-${d}`
+      };
+    }
+
+    const today = getTodayInfo();
+    document.getElementById('dateDisplay').textContent = today.display;
+
+    // 誕生日チェック＆バナー表示（メンバーカラーを動的適用）
+    const bdayMember = MEMBERS.find(m => m.birthday === today.mmdd);
+    if (bdayMember) {
+      const banner = document.getElementById('birthdayBanner');
+      banner.textContent = `🎂 Today is ${bdayMember.name}'s Birthday! 🎉`;
+      
+      // メンバーカラーを用いたグラデーション＆シャドウの設定
+      banner.style.background = `linear-gradient(90deg, ${bdayMember.color}, ${bdayMember.color}cc)`;
+      banner.style.boxShadow = `0 4px 14px ${bdayMember.color}66`;
+      banner.style.display = 'block';
+    }
+
+    let isSpinning = false;
+
+    // ページ読み込み時に本日の結果が存在するかチェック
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedDate = localStorage.getItem('spaga_last_date');
+      const savedMemberId = localStorage.getItem('spaga_last_member_id');
+
+      if (savedDate === today.ymd && savedMemberId !== null) {
+        const luckyMember = MEMBERS.find(m => m.id === parseInt(savedMemberId, 10));
+        if (luckyMember) {
+          revealCardData(luckyMember);
+          disableButton();
+        }
+      }
+    });
+
+    function disableButton() {
+      const drawBtn = document.getElementById('drawBtn');
+      const drawBtnText = document.getElementById('drawBtnText');
+      drawBtn.disabled = true;
+      drawBtnText.textContent = '本日はすでに占いました！';
+    }
+
+    function revealCardData(luckyMember) {
+      const cardSlot = document.getElementById('cardSlot');
+      const cardIcon = document.getElementById('cardIcon');
+      const cardTitle = document.getElementById('cardTitle');
+      const cardHandle = document.getElementById('cardHandle');
+      const luckyDetails = document.getElementById('luckyDetails');
+      const luckySong = document.getElementById('luckySong');
+      const luckyItem = document.getElementById('luckyItem');
+      const cardMsg = document.getElementById('cardMsg');
+      const profileBtn = document.getElementById('profileBtn');
+      const shareBtn = document.getElementById('shareBtn');
+
+      document.documentElement.style.setProperty('--member-color', luckyMember.color);
+      
+      // 画面全体の背景色を当選メンバーのカラー（透過率20%）に合わせたグラデーションに変化
+      document.body.style.background = `linear-gradient(135deg, #ffffff 0%, ${luckyMember.color}33 50%, #ffffff 100%)`;
+
+      cardSlot.classList.add('revealed');
+      cardSlot.href = luckyMember.url;
+
+      cardIcon.textContent = '✨';
+      cardTitle.textContent = luckyMember.name;
+      cardHandle.textContent = luckyMember.handle;
+
+      luckySong.textContent = `『${luckyMember.song}』`;
+      luckyItem.textContent = luckyMember.item;
+      luckyDetails.style.display = 'block';
+
+      cardMsg.textContent = luckyMember.msg;
+
+      profileBtn.href = luckyMember.url;
+      profileBtn.style.display = 'flex';
+
+      const tweetText = `🎀 今日のSUPER☆GiRLSラッキーメンバーは……\n\n✨ ${luckyMember.name} さん (${luckyMember.handle}) ✨\n🎵 ラッキー曲: 『${luckyMember.song}』\n🍀 ラッキーアイテム: ${luckyMember.item}\n\n${luckyMember.msg}\nhttps://updjolo.github.io/spaga-omikuzi/\n\n#スパガ #SUPERGiRLS #今日のラッキーメンバー`;
+      shareBtn.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+      shareBtn.style.display = 'flex';
+    }
+
+    function drawFortune() {
+      if (isSpinning) return;
+
+      const savedDate = localStorage.getItem('spaga_last_date');
+      if (savedDate === today.ymd) {
+        disableButton();
+        return;
+      }
+
+      isSpinning = true;
+
+      const drawBtn = document.getElementById('drawBtn');
+      const cardSlot = document.getElementById('cardSlot');
+      const cardIcon = document.getElementById('cardIcon');
+      const cardTitle = document.getElementById('cardTitle');
+      const cardHandle = document.getElementById('cardHandle');
+      const luckyDetails = document.getElementById('luckyDetails');
+      const profileBtn = document.getElementById('profileBtn');
+      const shareBtn = document.getElementById('shareBtn');
+      const cardMsg = document.getElementById('cardMsg');
+
+      drawBtn.disabled = true;
+      drawBtn.style.opacity = '0.7';
+      luckyDetails.style.display = 'none';
+      profileBtn.style.display = 'none';
+      shareBtn.style.display = 'none';
+      cardSlot.classList.remove('revealed');
+      cardSlot.removeAttribute('href');
+      cardIcon.textContent = '🔮';
+      cardMsg.textContent = '運勢を占っています...';
+
+      let shuffleCount = 0;
+      const maxShuffles = 15;
+
+      const interval = setInterval(() => {
+        const tempMember = MEMBERS[Math.floor(Math.random() * MEMBERS.length)];
+        cardTitle.textContent = tempMember.name;
+        cardHandle.textContent = tempMember.handle;
+        document.documentElement.style.setProperty('--member-color', tempMember.color);
+        shuffleCount++;
+
+        if (shuffleCount >= maxShuffles) {
+          clearInterval(interval);
+          revealResult();
+        }
+      }, 80);
+
+      function revealResult() {
+        const luckyMember = MEMBERS[Math.floor(Math.random() * MEMBERS.length)];
+
+        // 本日の日付と結果を保存
+        localStorage.setItem('spaga_last_date', today.ymd);
+        localStorage.setItem('spaga_last_member_id', luckyMember.id);
+
+        revealCardData(luckyMember);
+        disableButton();
+        drawBtn.style.opacity = '1';
+        isSpinning = false;
+      }
+    }
+  </script>
+</body>
+</html>
