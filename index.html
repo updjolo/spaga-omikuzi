@@ -442,6 +442,7 @@
         const luckyMember = MEMBERS[Math.floor(Math.random() * MEMBERS.length)];
 
         // 本日の日付と結果を保存
+        
         localStorage.setItem('spaga_last_date', today.ymd);
         localStorage.setItem('spaga_last_member_id', luckyMember.id);
 
@@ -449,11 +450,10 @@
         disableButton();
         drawBtn.style.opacity = '1';
         isSpinning = false;
+        //1.0公開
+        //1.01メンバーのmessageを修正
       }
     }
   </script>
 </body>
-//1.0公開
-//1.01メンバーのmessageを修正
 </html>
-
